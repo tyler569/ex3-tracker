@@ -1,8 +1,10 @@
 import express from 'express'
 import mongoose from 'mongoose'
 
+import { attackRouter } from './routes/attack.js'
+import { editRouter } from './routes/edit.js'
+
 const app = express()
-const attackRouter = express.Router()
 
 mongoose.connect('mongodb://localhost/combattracker')
 const db = mongoose.connection
@@ -15,13 +17,9 @@ db.once('connected', () => {
   console.log('Database Connected')
 })
 
-attackRouter.post('/', (req, res, next) => {
-  console.log(req.body)
-  res.send(JSON.stringify(req.body))
-})
-
 app.use(express.json())
 app.use('/attack', attackRouter)
+app.use('/edit', editRouter)
 
 const { SERVER_PORT: port = 3001 } = process.env
 

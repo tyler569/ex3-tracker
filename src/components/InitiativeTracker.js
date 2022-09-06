@@ -1,17 +1,17 @@
 import React from "react";
 
 import { AttackForm } from "./AttackForm";
+import { CharacterInfo } from "./CharacterInfo";
+import { CharacterEditor } from './CharacterEditor';
 import sortBy from "../utils/sortBy";
+import { useParams } from "react-router";
 
-export class InitiativeTracker extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      characters: props.characters
-    }
-  }
+export function InitiativeTracker({ state: { characters, round } }) {
+  const { combat } = useParams()
 
-  onChildSubmit(event) {
+  const [selected, setSelected] = React.useState(false)
+
+  const onChildSubmit = event => {
     event.preventDefault()
     const target = Number.parseInt(event.target.elements.attack_target.value)
     const source = Number.parseInt(event.target.elements.attack_source.value)
@@ -28,28 +28,50 @@ export class InitiativeTracker extends React.Component {
         target,
         value,
         type,
-      })
+      }),
     })
   }
 
-  render() {
-    const chars = this.state.characters
-    const initiative = sortBy(
-      chars.filter(c => !c.acted),
-      c => c.initiative
-    )
+  const onEditSubmit = (event, character) => {
+    event.preventDefault()
+    fetch(`/edit/${combat}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        id: character.id,
+      }),
+    })
+  }
 
-    return <div>
-      <h1>Round: {this.props.round}</h1>
-      <h1>Initiative: {initiative[0].initiative}</h1>
+  const onInfoClick = (event, character) => {
+    event.preventDefault()
+    setSelected(character)
+  }
+
+  sortBy(characters, c => -c.initiative)
+
+  const nextUp = characters.find(c => !c.acted)
+
+  return <div>
+    <div class="sidebar">
+      <h1>Round: {round}</h1>
       {
-        chars.map(({ name, initiative, acted }) =>
-          <p key={name}>{name}: initiative: {initiative} {acted ? "(done)" : ""}</p>)
-      }
-      {
-        chars.map((char) =>
-          <AttackForm character={char} characters={chars} key={char.id} onSubmit={this.onChildSubmit.bind(this)} />)
+        characters.map((char) =>
+          <CharacterInfo 
+            character={char}
+            key={char.name}
+            onClick={onInfoClick}
+            selected={selected && selected.id === char.id} />)
       }
     </div>
-  }
+    <div class="main-body">
+      <h2>Next up: {nextUp.name}</h2>
+      <AttackForm character={nextUp} characters={characters} onSubmit={onChildSubmit} />
+      <br />
+      { selected &&
+        <CharacterEditor character={selected} onSubmit={(e) => onEditSubmit(e, selected)} /> }
+    </div>
+  </div>
 }

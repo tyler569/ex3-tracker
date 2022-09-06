@@ -1,0 +1,25 @@
+.character-info-box {
+  width: 100%;
+  display: inline-block;
+  background-color: darkgrey;
+  margin: 2px 12px 2px 12px;
+  padding: 0px 2px 0px 2px;
+  border: black 1px solid;
+}
+
+.character-info-name {
+  font-size: 2em;
+  color: white;
+  float: left;
+}
+
+.character-info-initiative {
+  font-size: 2em;
+  color: white;
+  float: right;
+}
+
+.character-info-selected {
+  margin: 0px 10px 0px 10px;
+  border: yellow 3px solid;
+}

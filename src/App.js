@@ -12,7 +12,7 @@ function App() {
       <Route path="/" element={<p>Nothing to see here</p>} />
       <Route path="/new" element={<p>Let's make a new combat</p>} />
       <Route path="/:combat/:char" element={<Child />} />
-      <Route path="/combat/:combat/:char" element={<InitiativeTracker characters={testState.characters} round={testState.round} />} />
+      <Route path="/combat/:combat/:char" element={<InitiativeTracker state={testState} />} />
     </Routes>
   </Router>
 }
