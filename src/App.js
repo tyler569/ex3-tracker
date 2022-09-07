@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, NavLink, useParams } from 'react-router-dom';
 import './App.css';
 
 import { InitiativeTracker } from './components/InitiativeTracker';
@@ -9,10 +9,10 @@ function App() {
   return <Router>
     <h1>Exalted Combat Tracker</h1>
     <Routes>
-      <Route path="/" element={<p>Nothing to see here</p>} />
+      <Route path="/" element={<p><NavLink to="/new">New Combat</NavLink></p>} />
       <Route path="/new" element={<p>Let's make a new combat</p>} />
-      <Route path="/:combat/:char" element={<Child />} />
-      <Route path="/combat/:combat/:char" element={<InitiativeTracker state={testState} />} />
+      <Route path="/combat/:combat" element={<InitiativeTracker state={testState} />} />
+      <Route path="/*" element={<p>That's a 404</p>} />
     </Routes>
   </Router>
 }
